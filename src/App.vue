@@ -1,16 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app">
+    <POTDResults />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { reactive, computed } from 'vue'
+import { AppState } from './AppState'
+import { potdService } from './services/POTDService'
+import POTDResults from './components/POTDResults'
+
 
 export default {
   name: 'App',
+  setup () {
+    const state = reactive({
+      potd: computed(() => AppState.photoOfTheDay)
+    })
+    return {
+      state,
+      async getPOTD() {
+        try {
+          await potdService.setActive()
+        } catch(err) {
+          console.error(err)
+        }
+      }
+    }
+  },
   components: {
-    HelloWorld
+    // eslint-disable-next-line vue/no-unused-components
+    POTDResults
   }
+  
 }
 </script>
 
@@ -19,8 +41,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
